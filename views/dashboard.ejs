@@ -1,0 +1,40 @@
+<%- include('partials/header'); -%> 
+
+<form class = "col s12" action="/dashboard" method="POST" enctype="multipart/form-data">
+  <div class = "row">
+    <input type="text" id="name" placeholder="Image Title"
+               value="" name="name" required>
+    <div class = "file-field input-field">
+      <div class = "btn">
+        <span>Browse</span>
+        <input type = "file" name="image" />
+      </div>
+      
+      <div class = "file-path-wrapper">
+          <input class = "file-path validate" type = "text"
+            placeholder = "Upload file" />
+      </div>
+    </div>
+  </div>
+  
+  <div class="row">
+    <button class="btn waves-effect waves-light" style="font-size: 20px;" type="submit">Upload File
+    </button> &nbsp;
+  </div>
+</form> 
+<hr>
+<!-- <h3>Uploaded Images</h3> -->
+<div>
+  <ul class="recipes">
+  <% items.forEach(function(image) { %>
+    <li class="recipe">
+      <img src="data:image/<%=image.img.contentType%>;base64,
+                     <%=image.img.data.toString('base64')%>">
+      <h5><%= image.name %></h5>
+      <a class="btn">Delete</a>
+    </li>
+  <% }) %>
+  </ul>
+</div>
+
+<%- include('partials/footer'); -%>
