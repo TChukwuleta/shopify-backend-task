@@ -48,6 +48,9 @@ router.get('/dashboard', requireAuth, userController.getDashboard)
 // Uploading images
 router.post('/dashboard', upload.single('image'), userController.postImage)
 
+// Delete an image
+router.get('/deleteimage/:name', requireAuth, userController.deleteImage)
+
 // logout
 router.get('/logout', userController.logoutGet)
 

@@ -30,8 +30,9 @@
     <li class="recipe">
       <img src="data:image/<%=image.img.contentType%>;base64,
                      <%=image.img.data.toString('base64')%>">
-      <h5><%= image.name %></h5>
-      <a class="btn">Delete</a>
+      <h5>Image Title: <%= image.name %></h5>
+      <h5>By: <%= profile.firstName %></h5>
+      <a class="btn" href="/deleteimage/<%= image.name %>">Delete</a>
     </li>
   <% }) %>
   </ul>
