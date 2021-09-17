@@ -13,6 +13,7 @@ const requireAuth = (req, res, next) => {
       } else {
         console.log(decodedToken);
         req.user = decodedToken
+        
         next();
       }
     });  

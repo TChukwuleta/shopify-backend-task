@@ -6,13 +6,22 @@ const appRoutes = require('./routes/userRoutes')
 const dotenv = require('dotenv')
 dotenv.config()
 
-mongoose.connect(`${process.env.MONGO_URL}`, { useNewUrlParser: true })
+// mongoose.connect(`${process.env.MONGO_URL}`, { useNewUrlParser: true })
+// .then(() => {
+//     console.log('Leggo')
+// })
+// .catch((e) => { 
+//     console.log(e)
+// })
+
+const uri = 'mongodb://localhost/forshopify'
+mongoose.connect(uri, { useNewUrlParser: true })
 .then(() => {
     console.log('Leggo')
 })
-.catch((e) => { 
+.catch((e) => {
     console.log(e)
-})
+}) 
 
 app.use(express.urlencoded({ extended: false }))
 app.use(express.json())
@@ -27,3 +36,5 @@ const port = process.env.PORT || 2021
 app.listen(port, () => {
     console.log(`App is ready and listening on port ${port}`)
 })
+
+module.exports = app;

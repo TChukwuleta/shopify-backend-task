@@ -2,7 +2,7 @@ const request = require('supertest')
 const chai = require('chai')
 const expect = chai.expect
 const server = require('../index')
-const { userProfile } = require('../models/userModel')
+const userProfile = require('../models/userModel')
 
 class MockUser {
     createUser(){
@@ -19,19 +19,22 @@ class MockUser {
         })
     }
 
-    loginUser() {
-        return request(server)
-        .post('/login')
-        .send(this.user)
-    }
-
-    registerToDb() {
+    registerUser() {
         return request(server)
         .post('/register')
         .send({
             firstName: "Tobechi",
             lastName: "Chukwuleta",
             images: [],
+            email: "testmail@test.com",
+            password: "Random Pass"
+        })
+    }
+
+    loginUser() {
+        return request(server)
+        .post('/login')
+        .send({
             email: "testmail@test.com",
             password: "Random Pass"
         })
@@ -57,28 +60,25 @@ describe('MockUser', () => {
             expect(foundUser.length == 0)
 
             // Insert into database
-            const temp = await mockUser.registerToDb()
+            const temp = await mockUser.registerUser()
 
             // Should only store one in database
             foundUser = await userProfile.find({ email: mockUser.email })
-            expect()
+            expect(foundUser.length == 1)
 
-            // log in the user
+            // // log in the user
             const response = await mockUser.loginUser()
+            // expect(response.length == 1)
+            console.log(response.header['set-cookie'])
+            // console.log(response.Cookies.jwt)
 
-            // Extract the jwt response 
-            const { success, token } = response.body
-
-            // Expect auth to be valid and jwt to be defined and > 0
-            expect(success).to.be.true
-            expect(token).length.to.be.gt(0)
-
-            // Delete user
+            // // Delete user
             mockUser.deleteFromDb()
 
-            // Make sure it is deleted
-            foundUser = await userProfile.find({ email: mockUser.email })
-            expect(foundUser.length == 0)
+            // // Make sure it is deleted
+            removeUser = await userProfile.find({ email: mockUser.email })
+            console.log(removeUser)
+            expect(removeUser.length == 0)
         })
     })
 });

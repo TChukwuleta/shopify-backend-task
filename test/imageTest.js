@@ -1,6 +1,7 @@
 const chai = require('chai')
 const request = require('supertest')
 const expect = chai.expect
+const fs = require('fs')
 const server = require('../index')
 const { MockUser } = require('./userTest')
 
@@ -12,14 +13,14 @@ describe("Image", () => {
             mockUser.createUser()
 
             // Put into the database
-            await mockUser.registerToDb()
+            await mockUser.registerUser()
 
             const token = await mockUser.getToken()
+            console.log('token', token)
 
             // List all photos for user
             const photoResponse = await request(server)
             .get('/dashboard')
-            .set("Authorization", token)
 
             expect(photoResponse.body.length == 0)
 
@@ -32,28 +33,15 @@ describe("Image", () => {
             mockUser.createUser()
 
             // Put into the database
-            await mockUser.registerToDb()
-
-            // get token
-            const token = await mockUser.getToken()
+            await mockUser.registerUser()
 
             // Upload Photo
             const onePhotoResponse = await request(server)
             .post('/dashboard')
-            .set("Authorization", token)
-            .field("name", "temp.jpg")
-            .attach("file", `${__dirname}/mockPhotos/temp.jpg`);
+            .set('content-type', 'multipart/form-data')
+            .field("name", "background.png")
+            .attach("file", fs.readFileSync(`${__dirname}/mockPhotos/background.png`));
             expect(onePhotoResponse.body.length === 1);
-
-            const photoId = onePhotoResponse.body._id;
-
-            // delete photo
-            const deletePhotoResponse = await request(server)
-                .delete("/")
-                .set("Authorization", token)
-                .send({ id: photoId });
-
-            expect(deletePhotoResponse.body.length === 0);
 
             // wipe from db
             await mockUser.deleteFromDb();
