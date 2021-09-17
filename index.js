@@ -24,7 +24,7 @@ app.use(appRoutes)
 
 app.set('view engine', 'ejs')
 
-const port = 2021
+const port = process.env.PORT || 2021
 app.listen(port, () => {
     console.log(`App is ready and listening on port ${port}`)
 })
