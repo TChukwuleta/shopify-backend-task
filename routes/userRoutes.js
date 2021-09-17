@@ -7,21 +7,28 @@ const multer = require('multer')
 // Multer configuration
 const multerStorage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, 'public/')
+    const supported = ["image/jpeg", "image/png"]
+    const found = supported.find(extension => extension === file.mimetype)
+    if(found){
+        cb(null, 'public/')
+    }
+    else {
+        cb({ message: "Not an Image file"}, false)
+    }
   },
   filename: (req, file, cb) => {
     cb(null, file.originalname)
   }
 })
 
-// const multerFiler = (req, file, cb) => {
-//   if(file.mimetype.split('/')[1] === 'png' || file.mimetype.split('/')[1] === 'jpg'){
-//     cb(null, true)
-//   }
-//   else{
-//     cb(new Error('Not an Image'), false)
-//   }
-// }
+// const multerStorage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//       cb(null, 'public/')
+//     },
+//     filename: (req, file, cb) => {
+//       cb(null, file.originalname)
+//     }
+// })
 
 const upload = multer({
   storage: multerStorage
@@ -46,7 +53,7 @@ router.post('/login', userController.signInPost)
 router.get('/dashboard', requireAuth, userController.getDashboard)
 
 // Uploading images
-router.post('/dashboard', upload.single('image'), userController.postImage)
+router.post('/dashboard', upload.single('image'), requireAuth, userController.postImage)
 
 // Delete an image
 router.get('/deleteimage/:name', requireAuth, userController.deleteImage)

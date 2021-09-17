@@ -62,7 +62,8 @@ const signUpPost = async (req, res) => {
           firstName,
           lastName,
           email, 
-          password 
+          password,
+          images: []
         });
       const token = createToken(user._id);
     //   console.log(token)
@@ -101,57 +102,54 @@ const signInPost = async (req, res) => {
 // Get the dashboard
 const getDashboard = (req, res) => {
   const user = req.user
-  const profile = userProfile.findById(user._id)
+  const profile = userProfile.findById(user.id)
   if(profile){
     console.log("LEts goo")
-    Image.find({user: user._id}, (err, items) => {
+    // Image.find({_id: profile.images._id}, (err, items) => {
+    Image.find({ user: user.id }, (err, items) => {
       if(err) {
         console.log(err)
         res.status(500).send('An error occured', err)
       }
       else {
-        res.render('dashboard', { items, profile: user._id })
+        // console.log(profile)
+        res.render('dashboard', { items, profile: user.id })
       }
     })
-  }
+  } 
 }
 
 // Upload an image
 const postImage = async (req, res) => {
   const user = req.user
   if(user){
-    const profile = await userProfile.findById(user._id)
+    const profile = await userProfile.findById(user.id)
     if(profile){
-      const existingImage = await Image.find({ name: req.body.name })
-      if(existingImage){
-        return res.status(400).json({ message: "Image with that name already exists" })
-      }
-      Image.create({
+      const newImage = await Image.create({
         name: req.body.name,
         img: {
           data: fs.readFileSync(path.resolve(__dirname, `../public/${req.file.originalname}`)),
           contentType: 'image/png'
-        }
-      }, (err, item) => {
-        if(err){
-          console.log(err)
-        }
-        else{
-          res.redirect('/dashboard')
-        }
+        },
+        user:[profile._id]
       })
+      profile.images.push(newImage)
+      const result = profile.save()
+      console.log(result)
+      return res.redirect('/dashboard')
     }
+    return res.redirect('/login')
   }
 }
 
 // Delete an Image
 const deleteImage = async (req, res) => {
   const user = req.user
-  const profile = await userProfile.findById(user._id)
+  const profile = await userProfile.findById(user.id)
   if(profile){
-    const photo = await Image.find({ user: user._id })
+    const photo = await Image.find({ user: user.id  })
     if(photo){
-      await Image.deleteOne({ name: req.params.name, user: user._id }, (err) => {
+      await Image.deleteOne({ name: req.params.name, user: user.id }, (err) => {
         if(err){
           console.log(err)
         }

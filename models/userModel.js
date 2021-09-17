@@ -10,6 +10,10 @@ const userSchema = new schema({
     lastName: {
         type: String
     },
+    images: [{
+        type: schema.Types.ObjectId,
+        ref: 'image'
+    }],
     email: {
         type: String,
         required: [true, 'Please enter an email'],

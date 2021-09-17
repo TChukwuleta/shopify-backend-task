@@ -2,10 +2,10 @@ const mongoose = require('mongoose')
 const schema = mongoose.Schema
 
 const imageSchema = new schema({
-    user: {
+    user: [{
         type: schema.Types.ObjectId,
         ref: 'userprofile'
-    },
+    }],
     name: {
         type: String
     },
