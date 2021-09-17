@@ -25,4 +25,4 @@ Tests are run using the `mocha` framework. This is stored in the `/tests` folder
 
 Here is an output photo of the test:
 
-![testing photo](https://drive.google.com/file/d/1cFf3j1ZlWJGswJ7rr3cXPJJyMrljPms7/view?usp=sharing)
+![testing photo](https://drive.google.com/file/d/1cFf3j1ZlWJGswJ7rr3cXPJJyMrljPms7)
